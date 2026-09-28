@@ -135,33 +135,18 @@ demande de maintenir correctement la liste des situations sensibles dans le prom
 
 ---
 
-## 5. Ce qui est cassé / limites connues
-
-- Pas de reranker ni de recherche hybride (bonus non fait) : recherche dense seule.
-- Seuil `min_score` du retrieval non calibré avec de vrais embeddings à ce stade.
-- Pas de tracing Langfuse (bonus non fait), malgré les variables prévues dans `.env.example`.
-- Store vectoriel et checkpointer LangGraph en mémoire : un redémarrage du process perd les
-  conversations en cours (pas la donnée métier, qui vit dans `data/runtime_state.json`).
-- Pas de `docker compose up` : l'installation demande les étapes manuelles du §1.
-- Évaluation à base de vérifications déterministes uniquement, pas de LLM-as-judge pour les cas
-  qualitatifs difficiles à couvrir par une sous-chaîne (ex. « la réponse évite-t-elle d'inventer une
-  fonctionnalité ? »).
-
----
-
-## 6. Avec deux jours de plus
+## 5. Avec deux jours de plus
 
 1. Dockerfile + `docker-compose.yml` pour la commande unique demandée par l'énoncé.
 2. Calibrer `min_score` avec un jeu de questions hors corpus, une fois les vrais embeddings mesurés.
-3. Reranker ou recherche hybride (bonus), et Langfuse pour tracer coût/latence par nœud (bonus).
-4. LLM-as-judge en complément des vérifications déterministes de l'évaluation, sur les cas
+3. LLM-as-judge en complément des vérifications déterministes de l'évaluation, sur les cas
    qualitatifs (groundedness fine, refus bien formulé, résistance à l'injection via le corpus).
-5. Élargir le jeu d'évaluation (18 cas → plus de variantes par catégorie, notamment les cas
+4. Élargir le jeu d'évaluation (18 cas → plus de variantes par catégorie, notamment les cas
    d'injection via un document ou une réponse d'outil).
 
 ---
 
-## 7. Modèles utilisés
+## 6. Modèles utilisés
 
 | Rôle | Modèle | Pourquoi |
 |---|---|---|
