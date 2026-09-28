@@ -85,8 +85,7 @@ situations sensibles (RGPD, fraude, décès, procédure judiciaire, mineur/prot�
 
 ## 3. Résultats d'évaluation
 
-*(à compléter après un run `python -m evaluation.run_eval` avec une clé OpenRouter valide — voir
-`evaluation/results.md` pour le détail par catégorie et l'analyse des échecs)*
+*(à compléter après un run `python -m evaluation.run_eval` clé expiré` 
 
 | Catégorie | Score |
 |---|---|
