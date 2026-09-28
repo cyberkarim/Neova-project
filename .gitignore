@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Secrets — never commit the OpenRouter key
+.env
+.env.*
+!.env.example
+
+# Runtime state written by the API (overlay on top of the read-only fixture)
+data/runtime_state.json
+data/runtime_state.tmp
+
+# Caches (transcriptions OCR, index d'embeddings)
+.cache/
+
+# OS / editor
+.DS_Store
+*.swp
