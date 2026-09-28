@@ -136,7 +136,6 @@ demande de maintenir correctement la liste des situations sensibles dans le prom
 - Pas de reranker ni de recherche hybride (bonus non fait) : recherche dense seule.
 - Seuil `min_score` du retrieval non calibré avec de vrais embeddings à ce stade.
 - Pas de tracing Langfuse (bonus non fait), malgré les variables prévues dans `.env.example`.
-- Le parsing des PDF (`pymupdf4llm`) n'est pas mis en cache : ~15 s à chaque démarrage à froid.
 - Store vectoriel et checkpointer LangGraph en mémoire : un redémarrage du process perd les
   conversations en cours (pas la donnée métier, qui vit dans `data/runtime_state.json`).
 - Pas de `docker compose up` : l'installation demande les étapes manuelles du §1.
@@ -153,8 +152,7 @@ demande de maintenir correctement la liste des situations sensibles dans le prom
 3. Reranker ou recherche hybride (bonus), et Langfuse pour tracer coût/latence par nœud (bonus).
 4. LLM-as-judge en complément des vérifications déterministes de l'évaluation, sur les cas
    qualitatifs (groundedness fine, refus bien formulé, résistance à l'injection via le corpus).
-5. Cache du parsing PDF, pour un démarrage à froid instantané.
-6. Élargir le jeu d'évaluation (18 cas → plus de variantes par catégorie, notamment les cas
+5. Élargir le jeu d'évaluation (18 cas → plus de variantes par catégorie, notamment les cas
    d'injection via un document ou une réponse d'outil).
 
 ---
