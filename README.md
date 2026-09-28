@@ -165,7 +165,7 @@ demande de maintenir correctement la liste des situations sensibles dans le prom
 | Rôle | Modèle | Pourquoi |
 |---|---|---|
 | `CHAT_MODEL` | `openai/gpt-4.1-mini` | Tool calling fiable, bon français, gère les images (transcription de la fiche roaming scannée). |
-| `EMBEDDING_MODEL` | `baai/bge-m3` | Multilingue (le corpus est entièrement en français), très bon marché. |
+| `EMBEDDING_MODEL` | `baai/bge-m3` | Multilingue (le corpus est entièrement en français). |
 | `JUDGE_MODEL` | *(à définir, ex. `mistralai/ministral-8b-2512`)* | Classification structurée (triage, vérification) : un modèle plus petit suffit et réduit le coût du juge, appelé plusieurs fois par tour. |
 
 Prix et disponibilité vérifiés sur `https://openrouter.ai/api/v1/models` au moment du choix. Suivi
@@ -177,4 +177,4 @@ curl -s https://openrouter.ai/api/v1/key -H "Authorization: Bearer $OPENROUTER_A
   | jq '.data | {usage, limit, limit_remaining}'
 ```
 
-**Dépense totale au moment de la soumission** : *(à compléter)*.
+
