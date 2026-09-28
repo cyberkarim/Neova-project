@@ -1,5 +1,8 @@
 import re
 
+import pymupdf
+
+from agent import ingest as ingest_module
 from agent.ingest import MAX_CHUNK_CHARS, clean_markdown, parse_front_matter
 
 
@@ -75,3 +78,58 @@ def test_clean_markdown_drops_repeated_running_title():
     cleaned = clean_markdown(md, "Mon titre")
     assert cleaned.count("Mon titre") == 1
     assert "1 / 2" not in cleaned
+
+
+def _write_minimal_pdf(path):
+    doc = pymupdf.open()
+    doc.new_page().insert_text((72, 72), "Bonjour")
+    doc.save(path)
+    doc.close()
+
+
+def test_pdf_markdown_parsing_is_cached_by_content_hash(tmp_path, monkeypatch):
+    pdf_path = tmp_path / "doc.pdf"
+    _write_minimal_pdf(pdf_path)
+
+    real_to_markdown = ingest_module.pymupdf4llm.to_markdown
+    calls = {"n": 0}
+
+    def counting(*args, **kwargs):
+        calls["n"] += 1
+        return real_to_markdown(*args, **kwargs)
+
+    monkeypatch.setattr(ingest_module.pymupdf4llm, "to_markdown", counting)
+    cache_dir = tmp_path / "cache"
+
+    first = ingest_module.pdf_to_markdown(pdf_path, cache_dir=cache_dir)
+    second = ingest_module.pdf_to_markdown(pdf_path, cache_dir=cache_dir)
+
+    assert calls["n"] == 1, "le second appel doit être servi depuis le cache, sans reparser"
+    assert first == second
+    assert "Bonjour" in first
+
+
+def test_pdf_markdown_cache_is_invalidated_when_the_file_changes(tmp_path, monkeypatch):
+    pdf_path = tmp_path / "doc.pdf"
+    _write_minimal_pdf(pdf_path)
+
+    real_to_markdown = ingest_module.pymupdf4llm.to_markdown
+    calls = {"n": 0}
+
+    def counting(*args, **kwargs):
+        calls["n"] += 1
+        return real_to_markdown(*args, **kwargs)
+
+    monkeypatch.setattr(ingest_module.pymupdf4llm, "to_markdown", counting)
+    cache_dir = tmp_path / "cache"
+
+    ingest_module.pdf_to_markdown(pdf_path, cache_dir=cache_dir)
+
+    doc = pymupdf.open()
+    doc.new_page().insert_text((72, 72), "Bonjour, version modifiée")
+    doc.save(pdf_path)
+    doc.close()
+
+    ingest_module.pdf_to_markdown(pdf_path, cache_dir=cache_dir)
+
+    assert calls["n"] == 2, "un contenu différent doit être reparsé, pas servi depuis l'ancien cache"

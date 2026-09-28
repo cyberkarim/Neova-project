@@ -6,6 +6,7 @@ l'agent sache quels contenus sont internes (jamais à citer tels quels au client
 """
 from __future__ import annotations
 
+import hashlib
 import logging
 import re
 from collections.abc import Callable
@@ -14,6 +15,8 @@ from pathlib import Path
 import pymupdf4llm
 from langchain_core.documents import Document
 from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
+
+from .ocr import CACHE_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -54,8 +57,19 @@ _NOISE_PATTERNS = [
 ]
 
 
-def pdf_to_markdown(path: Path) -> str:
-    return pymupdf4llm.to_markdown(str(path))
+def pdf_to_markdown(path: Path, cache_dir: Path = CACHE_DIR) -> str:
+    """Parse un PDF en Markdown. L'analyse de mise en page de pymupdf4llm prend ~1-2 s par
+    document (~15 s pour tout le corpus) : mis en cache sur disque par hash du contenu du PDF,
+    pour que les démarrages suivants soient instantanés tant que les fichiers ne changent pas."""
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()[:16]
+    cache_path = cache_dir / "pdf_markdown" / f"{path.stem}-{digest}.md"
+    if cache_path.exists():
+        return cache_path.read_text(encoding="utf-8")
+
+    markdown = pymupdf4llm.to_markdown(str(path))
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    cache_path.write_text(markdown, encoding="utf-8")
+    return markdown
 
 
 def _strip_bold(text: str) -> str:
