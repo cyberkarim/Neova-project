@@ -26,8 +26,10 @@ python -m venv .venv
 pip install -e ".[dev]"
 
 # 4. Configurer les secrets et les modèles
-copy .env.example .env              # macOS/Linux : cp .env.example .env
-# Éditer .env : renseigner OPENROUTER_API_KEY, CHAT_MODEL, EMBEDDING_MODEL (voir §7)
+# .env.example est le modèle versionné dans le repo : ne jamais le renommer ni le modifier.
+# On en fait une copie nommée .env (ignorée par git), et c'est DANS .env qu'on configure tout.
+Copy-Item .env.example .env         # macOS/Linux : cp .env.example .env
+# Ouvrir .env et y renseigner directement : OPENROUTER_API_KEY, CHAT_MODEL, EMBEDDING_MODEL (voir §7)
 ```
 
 ### Lancer le service
@@ -85,7 +87,9 @@ situations sensibles (RGPD, fraude, décès, procédure judiciaire, mineur/prot�
 
 ## 3. Résultats d'évaluation
 
-*(à compléter après un run `python -m evaluation.run_eval` clé expiré` 
+*(à compléter après un run `python -m evaluation.run_eval` avec une clé OpenRouter valide — voir
+`evaluation/results.md` pour le détail par catégorie et l'analyse des échecs. Non exécuté à ce
+stade : la clé fournie pour ce take-home était invalide/expirée, en attente de résolution.)*
 
 | Catégorie | Score |
 |---|---|
